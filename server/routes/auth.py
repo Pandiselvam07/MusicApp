@@ -13,7 +13,8 @@ router =APIRouter()
 
 @router.post('/signup',status_code=201)
 def signup_user(user:UserCreate,db :Session =Depends(get_db)):
-   
+  
+
    user_db =db.query(User).filter(User.email == user.email).first()
    if user_db:
      raise HTTPException(400,'User with same email found')
@@ -34,6 +35,7 @@ def login(user:UserLogin, db :Session =Depends(get_db)):
       is_match = bcrypt.checkpw(user.password.encode(),user_db.password)
       if not is_match:
        raise HTTPException(400,"Incorrect Password!")
+    
       return user_db
 
 
