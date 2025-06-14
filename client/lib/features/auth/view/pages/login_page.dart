@@ -1,5 +1,7 @@
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/widgets/custom_text_field.dart';
+import 'package:client/features/auth/repositories/auth_remote_repository.dart';
+import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/auth_gradient_button.dart';
@@ -15,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -34,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Sign In',
+                'Login',
                 style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 25),
@@ -46,18 +49,31 @@ class _LoginPageState extends State<LoginPage> {
                 isObscureText: true,
               ),
               SizedBox(height: 15),
-              AuthGradientButton(buttonText: 'Sign In', onTap: () {}),
+              AuthGradientButton(
+                buttonText: 'Sign In',
+                onTap: () async {
+                  await AuthRemoteRepository().login(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                  );
+                },
+              ),
               SizedBox(height: 15),
-              RichText(
-                text: TextSpan(
-                  text: 'Don\'t Have An Account?  ',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  children: [
-                    TextSpan(
-                      text: 'Sign up',
-                      style: TextStyle(color: Pallete.gradient2),
-                    ),
-                  ],
+              GestureDetector(
+                onTap: () => Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (context) => SignupPage())),
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Don\'t Have An Account?  ',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    children: [
+                      TextSpan(
+                        text: 'Sign Up',
+                        style: TextStyle(color: Pallete.gradient2),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
