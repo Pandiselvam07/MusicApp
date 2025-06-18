@@ -31,12 +31,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isLoading = ref.watch(authViewModelProvider)?.isLoading == true;
+    final isLoading = ref.watch(
+      authViewModelProvider.select((val) => val?.isLoading == true),
+    );
     ref.listen(authViewModelProvider, (_, next) {
       next?.when(
         data: (data) {
           showSnackBar(context, 'Account created successfully! Please login ');
-
           Navigator.of(
             context,
           ).push(MaterialPageRoute(builder: (context) => LoginPage()));

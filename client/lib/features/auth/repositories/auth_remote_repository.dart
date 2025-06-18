@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:client/core/failure/failure.dart';
 import 'package:client/features/auth/model/user_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,7 +11,7 @@ import '../../../core/constants/server_constants.dart';
 part 'auth_remote_repository.g.dart';
 
 @riverpod
-AuthRemoteRepository authRemoteRepository(AuthRemoteRepositoryRef ref) {
+AuthRemoteRepository authRemoteRepository(Ref ref) {
   return AuthRemoteRepository();
 }
 
@@ -24,7 +24,7 @@ class AuthRemoteRepository {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('${ServerConstants.serverURL}auth/signup'),
+        Uri.parse('${ServerConstants.serverURL}/auth/signup'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );
@@ -46,7 +46,7 @@ class AuthRemoteRepository {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('${ServerConstants.serverURL}auth/login'),
+        Uri.parse('${ServerConstants.serverURL}/auth/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
@@ -55,7 +55,31 @@ class AuthRemoteRepository {
       if (response.statusCode != 200) {
         return Left(AppFailure(resBodyMap['detail']));
       }
-      return Right((UserModel.fromMap(resBodyMap)));
+      return Right(
+        (UserModel.fromMap(
+          resBodyMap['user'],
+        ).copyWith(token: resBodyMap['token'])),
+      );
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
+  }
+
+  //get current user
+  Future<Either<AppFailure, UserModel>> getCurrentUser({
+    required final token,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${ServerConstants.serverURL}/auth/'),
+        headers: {'Content-Type': 'application/json', 'x-auth-token': token},
+      );
+      final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode != 200) {
+        return Left(AppFailure(resBodyMap['detail']));
+      }
+      return Right((UserModel.fromMap(resBodyMap).copyWith(token: token)));
     } catch (e) {
       return Left(AppFailure(e.toString()));
     }

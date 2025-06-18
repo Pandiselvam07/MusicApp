@@ -1,13 +1,11 @@
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/widgets/custom_text_field.dart';
 import 'package:client/core/widgets/loader.dart';
-import 'package:client/features/auth/repositories/auth_remote_repository.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fpdart/fpdart.dart' show Left, Right;
-
 import '../../../../core/utils.dart';
+import '../../../home/view/home.dart';
 import '../../viewmodel/auth_viewmodel.dart';
 import '../widgets/auth_gradient_button.dart';
 
@@ -32,13 +30,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isLoading = ref.watch(authViewModelProvider)?.isLoading == true;
+    final isLoading = ref.watch(
+      authViewModelProvider.select((val) => val?.isLoading == true),
+    );
     ref.listen(authViewModelProvider, (_, next) {
       next?.when(
         data: (data) {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => LoginPage()));
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => Home()),
+            (_) => false,
+          );
         },
         error: (error, str) {
           showSnackBar(context, error.toString());
@@ -82,10 +83,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         if (formKey.currentState!.validate()) {
                           await ref
                               .read(authViewModelProvider.notifier)
-                              .login(
+                              .loginUser(
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
+                        } else {
+                          showSnackBar(context, 'Fill missing fields');
                         }
                       },
                     ),
