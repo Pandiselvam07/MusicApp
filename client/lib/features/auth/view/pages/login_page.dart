@@ -5,7 +5,7 @@ import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils.dart';
-import '../../../home/view/home.dart';
+import '../../../home/view/pages/home.dart';
 import '../../viewmodel/auth_viewmodel.dart';
 import '../widgets/auth_gradient_button.dart';
 
