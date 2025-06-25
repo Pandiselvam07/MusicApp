@@ -1,7 +1,7 @@
 import uuid
 import bcrypt
 import jwt
-from fastapi import Depends, HTTPException, Header
+from fastapi import Depends, HTTPException
 from database import get_db
 from middleware.auth_middleware import auth_middleware
 from models.user import User
@@ -14,7 +14,6 @@ router =APIRouter()
 
 @router.post('/signup',status_code=201)
 def signup_user(user:UserCreate,db :Session =Depends(get_db)):
-  
 
    user_db =db.query(User).filter(User.email == user.email).first()
    if user_db:

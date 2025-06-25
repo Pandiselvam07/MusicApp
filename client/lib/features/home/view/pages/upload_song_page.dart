@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/custom_text_field.dart';
+import 'package:client/features/home/repository/home_repository.dart';
+import 'package:client/features/home/view/widgets/audio_wave.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
@@ -53,7 +55,17 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Upload Song')),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.check))],
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await HomeRepository().uploadSong(
+                song: selectedAudio!,
+                thumbnail: selectedImage!,
+              );
+            },
+            icon: Icon(Icons.check),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -96,12 +108,14 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
                       ),
               ),
               const SizedBox(height: 40),
-              CustomTextField(
-                hintText: 'Pick Song',
-                controller: null,
-                readOnly: true,
-                onTap: selectAudio,
-              ),
+              selectedAudio != null
+                  ? AudioWave(path: selectedAudio!.path)
+                  : CustomTextField(
+                      hintText: 'Pick Song',
+                      controller: null,
+                      readOnly: true,
+                      onTap: selectAudio,
+                    ),
               const SizedBox(height: 20),
               CustomTextField(hintText: 'Artist', controller: artistController),
               const SizedBox(height: 20),
