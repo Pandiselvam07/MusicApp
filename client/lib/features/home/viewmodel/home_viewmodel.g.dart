@@ -23,7 +23,7 @@ final getAllSongsProvider = AutoDisposeFutureProvider<List<SongModel>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GetAllSongsRef = AutoDisposeFutureProviderRef<List<SongModel>>;
-String _$homeViewModelHash() => r'12530057ca5630d86b1ec26b5a748685beeeb05c';
+String _$homeViewModelHash() => r'40652991fe1842047ef5a65ee34fb26447077513';
 
 /// See also [HomeViewModel].
 @ProviderFor(HomeViewModel)

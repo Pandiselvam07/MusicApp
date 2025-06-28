@@ -15,10 +15,23 @@ class SongPage extends ConsumerStatefulWidget {
 class _SongPageState extends ConsumerState<SongPage> {
   @override
   Widget build(BuildContext context) {
+    final recentlyPlayedSongs = ref
+        .watch(homeViewModelProvider.notifier)
+        .getRecentlyPlayedSongs();
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          GridView.builder(
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200,
+              childAspectRatio: 3,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+            ),
+            itemCount: recentlyPlayedSongs.length,
+            itemBuilder: (context, index) {},
+          ),
           Padding(
             padding: const EdgeInsets.all(8),
             child: Text(
