@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-DATABASE_URL = 'postgresql://postgres:8940667787@localhost:5432/fluttermusicapp'
+DATABASE_URL = 'postgresql://postgres.itpvdgiyhabqsrbtagnj:[YOUR-PASSWORD]@aws-0-ap-south-1.pooler.supabase.com:6543/postgres'
 
 engine = create_engine(DATABASE_URL)
 
