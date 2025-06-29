@@ -1,5 +1,6 @@
 import 'package:client/core/providers/current_song_notifier.dart';
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/home/viewmodel/home_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,20 +19,89 @@ class _SongPageState extends ConsumerState<SongPage> {
     final recentlyPlayedSongs = ref
         .watch(homeViewModelProvider.notifier)
         .getRecentlyPlayedSongs();
-    return SafeArea(
+    final currentSong = ref.watch(currentSongNotifierProvider);
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 500),
+      decoration: currentSong == null
+          ? null
+          : BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  hexToColor(currentSong.hex_code),
+                  Pallete.transparentColor,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                stops: [0.0, 0.2],
+              ),
+            ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GridView.builder(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio: 3,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
+          if (recentlyPlayedSongs.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 32),
+              child: SizedBox(
+                height: 280,
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 200,
+                    childAspectRatio: 3,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                  itemCount: recentlyPlayedSongs.length,
+                  itemBuilder: (context, index) {
+                    final song = recentlyPlayedSongs[index];
+                    return GestureDetector(
+                      onTap: () {
+                        ref
+                            .read(currentSongNotifierProvider.notifier)
+                            .updateSong(song);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Pallete.borderColor,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(right: 20),
+                              width: 56,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(4),
+                                  bottomLeft: Radius.circular(4),
+                                ),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(song.thumbnail_url),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Flexible(
+                              child: Text(
+                                song.song_name,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-            itemCount: recentlyPlayedSongs.length,
-            itemBuilder: (context, index) {},
-          ),
+          ],
+          SizedBox(height: 50),
           Padding(
             padding: const EdgeInsets.all(8),
             child: Text(

@@ -20,7 +20,10 @@ class HomeLocalRepository {
   List<SongModel> loadSongs() {
     List<SongModel> songs = [];
     for (final key in box.keys) {
-      songs.add(SongModel.fromMap(box.get(key)));
+      final data = box.get(key);
+      if (data is Map) {
+        songs.add(SongModel.fromMap(Map<String, dynamic>.from(data)));
+      }
     }
     return songs;
   }

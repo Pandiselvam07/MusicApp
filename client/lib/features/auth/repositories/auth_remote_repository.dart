@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:client/core/failure/failure.dart';
-import 'package:client/features/auth/model/user_model.dart';
+import 'package:client/core/models/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
