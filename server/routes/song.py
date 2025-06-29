@@ -1,3 +1,4 @@
+import os
 import uuid
 import cloudinary
 import cloudinary.uploader
@@ -13,9 +14,9 @@ from pydantic_schemas.favorite_song import FavoriteSong
 router =APIRouter()
 
 cloudinary.config( 
-    cloud_name = "ddlinxe9x", 
-    api_key = "337746196766851", 
-    api_secret = "1TUsRFDVA9nQg9gemfdxqn1QvsY", 
+    cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"), 
+    api_key = os.getenv("CLOUDINARY_API_KEY"), 
+    api_secret = os.getenv("CLOUDINARY_API_SECRET"), 
     secure=True
 )
 
